@@ -26,7 +26,7 @@ public class WordTracker {
 
     public static void main(String[] args) {
 
-    	// OUTPUT
+    	// INPUT
         // Parse and validate arguments 
         if (args.length < 2) {
             System.out.println(USAGE);
@@ -55,10 +55,11 @@ public class WordTracker {
             } else {
                 System.out.println("Error: output flag must be -f<filename> with no space");
                 System.out.println(USAGE);
-                return;
+                return; 
             }
         }
 
+        
         // Serialization part for Irteza
         BSTree<Word> tree = RepositoryManager.load();
 
