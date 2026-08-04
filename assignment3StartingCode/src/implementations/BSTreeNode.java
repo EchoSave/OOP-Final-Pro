@@ -1,37 +1,102 @@
 package implementations;
 
-public class BSTreeNode<E extends Comparable<? super E>> {
-    private E element;
-    private BSTreeNode<E> left;
-    private BSTreeNode<E> right;
+import java.io.Serializable;
 
-    public BSTreeNode(E element) {
-        this.element = element;
-        this.left = null;
-        this.right = null;
-    }
+/**
+ * Represents one node in the binary search tree.
+ *
+ * @param <E> the type of element stored in the node
+ */
+public class BSTreeNode<E extends Comparable<? super E>>
+		implements Serializable
+{
+	private static final long serialVersionUID = 1L;
 
-    public E getElement() {
-        return element;
-    }
+	private E element;
+	private BSTreeNode<E> left;
+	private BSTreeNode<E> right;
 
-    public void setElement(E element) {
-        this.element = element;
-    }
+	/**
+	 * Creates a new tree node with the given element.
+	 *
+	 * @param element the element stored in this node
+	 * @throws NullPointerException if the element is null
+	 */
+	public BSTreeNode(E element)
+	{
+		if(element == null)
+		{
+			throw new NullPointerException("Element cannot be null.");
+		}
 
-    public BSTreeNode<E> getLeft() {
-        return left;
-    }
+		this.element = element;
+		this.left = null;
+		this.right = null;
+	}
 
-    public void setLeft(BSTreeNode<E> left) {
-        this.left = left;
-    }
+	/**
+	 * Returns the element stored in this node.
+	 *
+	 * @return the stored element
+	 */
+	public E getElement()
+	{
+		return element;
+	}
 
-    public BSTreeNode<E> getRight() {
-        return right;
-    }
+	/**
+	 * Replaces the element stored in this node.
+	 *
+	 * @param element the new element
+	 * @throws NullPointerException if the element is null
+	 */
+	public void setElement(E element)
+	{
+		if(element == null)
+		{
+			throw new NullPointerException("Element cannot be null.");
+		}
 
-    public void setRight(BSTreeNode<E> right) {
-        this.right = right;
-    }
+		this.element = element;
+	}
+
+	/**
+	 * Returns the left child node.
+	 *
+	 * @return the left child, or null if none exists
+	 */
+	public BSTreeNode<E> getLeft()
+	{
+		return left;
+	}
+
+	/**
+	 * Sets the left child node.
+	 *
+	 * @param left the new left child
+	 */
+	public void setLeft(BSTreeNode<E> left)
+	{
+		this.left = left;
+	}
+
+	/**
+	 * Returns the right child node.
+	 *
+	 * @return the right child, or null if none exists
+	 */
+	public BSTreeNode<E> getRight()
+	{
+		return right;
+	}
+
+	/**
+	 * Sets the right child node.
+	 *
+	 * @param right the new right child
+	 */
+	public void setRight(BSTreeNode<E> right)
+	{
+		this.right = right;
+	}
 }

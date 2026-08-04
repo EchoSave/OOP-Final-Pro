@@ -1,228 +1,384 @@
 package implementations;
 
-import utilities.BSTreeADT;
-import utilities.Iterator;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.NoSuchElementException;
 
-public class BSTree<E extends Comparable<? super E>> implements BSTreeADT<E> {
+import utilities.BSTreeADT;
+import utilities.Iterator;
 
-    private BSTreeNode<E> root;
-    private int size;
+/**
+ * Binary Search Tree implementation.
+ *
+ * @param <E> the type of elements stored in the tree
+ */
+public class BSTree<E extends Comparable<? super E>>
+		implements BSTreeADT<E>, Serializable
+{
+	private static final long serialVersionUID = 1L;
 
-    // Empty constructor
-    public BSTree() {
-        root = null;
-        size = 0;
-    }
+	private BSTreeNode<E> root;
+	private int size;
 
-    // Constructor with initial root element
-    public BSTree(E element) {
-        if (element == null) throw new NullPointerException();
-        root = new BSTreeNode<>(element);
-        size = 1;
-    }
+	/**
+	 * Creates an empty binary search tree.
+	 */
+	public BSTree()
+	{
+		root = null;
+		size = 0;
+	}
 
-    @Override
-    public BSTreeNode<E> getRoot() throws NullPointerException {
-        if (root == null) throw new NullPointerException();
-        return root;
-    }
+	/**
+	 * Creates a binary search tree with an initial root element.
+	 *
+	 * @param element the first element stored in the tree
+	 * @throws NullPointerException if the element is null
+	 */
+	public BSTree(E element)
+	{
+		if(element == null)
+		{
+			throw new NullPointerException("Element cannot be null.");
+		}
 
-    @Override
-    public int getHeight() {
-        return height(root);
-    }
+		root = new BSTreeNode<E>(element);
+		size = 1;
+	}
 
-    private int height(BSTreeNode<E> node) {
-        if (node == null) return 0;
-        return 1 + Math.max(height(node.getLeft()), height(node.getRight()));
-    }
+	@Override
+	public BSTreeNode<E> getRoot() throws NullPointerException
+	{
+		if(root == null)
+		{
+			throw new NullPointerException("The tree is empty.");
+		}
 
-    @Override
-    public int size() {
-        return size;
-    }
+		return root;
+	}
 
-    @Override
-    public boolean isEmpty() {
-        return size == 0;
-    }
+	@Override
+	public int getHeight()
+	{
+		return height(root);
+	}
 
-    @Override
-    public void clear() {
-        root = null;
-        size = 0;
-    }
+	/**
+	 * Recursively calculates the height of a subtree.
+	 *
+	 * @param node the current node
+	 * @return the height of the subtree
+	 */
+	private int height(BSTreeNode<E> node)
+	{
+		if(node == null)
+		{
+			return 0;
+		}
 
-    @Override
-    public boolean contains(E entry) throws NullPointerException {
-        if (entry == null) throw new NullPointerException();
-        return search(entry) != null;
-    }
+		return 1 + Math.max(
+				height(node.getLeft()),
+				height(node.getRight()));
+	}
 
-    @Override
-    public BSTreeNode<E> search(E entry) throws NullPointerException {
-        if (entry == null) throw new NullPointerException();
-        return searchNode(root, entry);
-    }
+	@Override
+	public int size()
+	{
+		return size;
+	}
 
-    private BSTreeNode<E> searchNode(BSTreeNode<E> node, E entry) {
-        if (node == null) return null;
+	@Override
+	public boolean isEmpty()
+	{
+		return size == 0;
+	}
 
-        int cmp = entry.compareTo(node.getElement());
-        if (cmp == 0) return node;
-        if (cmp < 0) return searchNode(node.getLeft(), entry);
-        return searchNode(node.getRight(), entry);
-    }
+	@Override
+	public void clear()
+	{
+		root = null;
+		size = 0;
+	}
 
-    @Override
-    public boolean add(E newEntry) throws NullPointerException {
-        if (newEntry == null) throw new NullPointerException();
+	@Override
+	public boolean contains(E entry) throws NullPointerException
+	{
+		if(entry == null)
+		{
+			throw new NullPointerException("Entry cannot be null.");
+		}
 
-        if (root == null) {
-            root = new BSTreeNode<>(newEntry);
-            size = 1;
-            return true;
-        }
+		return search(entry) != null;
+	}
 
-        BSTreeNode<E> current = root;
-        while (true) {
-            int cmp = newEntry.compareTo(current.getElement());
+	@Override
+	public BSTreeNode<E> search(E entry) throws NullPointerException
+	{
+		if(entry == null)
+		{
+			throw new NullPointerException("Entry cannot be null.");
+		}
 
-            if (cmp == 0) {
-                return false; // reject duplicates
-            }
-            else if (cmp < 0) {
-                if (current.getLeft() == null) {
-                    current.setLeft(new BSTreeNode<>(newEntry));
-                    size++;
-                    return true;
-                }
-                current = current.getLeft();
-            }
-            else {
-                if (current.getRight() == null) {
-                    current.setRight(new BSTreeNode<>(newEntry));
-                    size++;
-                    return true;
-                }
-                current = current.getRight();
-            }
-        }
-    }
+		return searchNode(root, entry);
+	}
 
-    @Override
-    public BSTreeNode<E> removeMin() {
-        if (root == null) return null;
+	/**
+	 * Recursively searches for an entry.
+	 *
+	 * @param node the current node
+	 * @param entry the entry to search for
+	 * @return the matching node, or null if not found
+	 */
+	private BSTreeNode<E> searchNode(BSTreeNode<E> node, E entry)
+	{
+		if(node == null)
+		{
+			return null;
+		}
 
-        if (root.getLeft() == null) {
-            BSTreeNode<E> min = root;
-            root = root.getRight();
-            size--;
-            return min;
-        }
+		int comparison = entry.compareTo(node.getElement());
 
-        BSTreeNode<E> parent = root;
-        BSTreeNode<E> current = root.getLeft();
+		if(comparison == 0)
+		{
+			return node;
+		}
+		else if(comparison < 0)
+		{
+			return searchNode(node.getLeft(), entry);
+		}
+		else
+		{
+			return searchNode(node.getRight(), entry);
+		}
+	}
 
-        while (current.getLeft() != null) {
-            parent = current;
-            current = current.getLeft();
-        }
+	@Override
+	public boolean add(E newEntry) throws NullPointerException
+	{
+		if(newEntry == null)
+		{
+			throw new NullPointerException("New entry cannot be null.");
+		}
 
-        parent.setLeft(current.getRight());
-        size--;
-        return current;
-    }
+		if(root == null)
+		{
+			root = new BSTreeNode<E>(newEntry);
+			size = 1;
+			return true;
+		}
 
-    @Override
-    public BSTreeNode<E> removeMax() {
-        if (root == null) return null;
+		BSTreeNode<E> current = root;
 
-        if (root.getRight() == null) {
-            BSTreeNode<E> max = root;
-            root = root.getLeft();
-            size--;
-            return max;
-        }
+		while(true)
+		{
+			int comparison = newEntry.compareTo(current.getElement());
 
-        BSTreeNode<E> parent = root;
-        BSTreeNode<E> current = root.getRight();
+			if(comparison == 0)
+			{
+				return false;
+			}
+			else if(comparison < 0)
+			{
+				if(current.getLeft() == null)
+				{
+					current.setLeft(new BSTreeNode<E>(newEntry));
+					size++;
+					return true;
+				}
 
-        while (current.getRight() != null) {
-            parent = current;
-            current = current.getRight();
-        }
+				current = current.getLeft();
+			}
+			else
+			{
+				if(current.getRight() == null)
+				{
+					current.setRight(new BSTreeNode<E>(newEntry));
+					size++;
+					return true;
+				}
 
-        parent.setRight(current.getLeft());
-        size--;
-        return current;
-    }
+				current = current.getRight();
+			}
+		}
+	}
 
-    // ----------- ITERATORS -----------
+	@Override
+	public BSTreeNode<E> removeMin()
+	{
+		if(root == null)
+		{
+			return null;
+		}
 
-    @Override
-    public Iterator<E> inorderIterator() {
-        ArrayList<E> list = new ArrayList<>();
-        inorder(root, list);
-        return new ListIterator<>(list);
-    }
+		if(root.getLeft() == null)
+		{
+			BSTreeNode<E> minimum = root;
+			root = root.getRight();
+			size--;
+			return minimum;
+		}
 
-    private void inorder(BSTreeNode<E> node, ArrayList<E> list) {
-        if (node == null) return;
-        inorder(node.getLeft(), list);
-        list.add(node.getElement());
-        inorder(node.getRight(), list);
-    }
+		BSTreeNode<E> parent = root;
+		BSTreeNode<E> current = root.getLeft();
 
-    @Override
-    public Iterator<E> preorderIterator() {
-        ArrayList<E> list = new ArrayList<>();
-        preorder(root, list);
-        return new ListIterator<>(list);
-    }
+		while(current.getLeft() != null)
+		{
+			parent = current;
+			current = current.getLeft();
+		}
 
-    private void preorder(BSTreeNode<E> node, ArrayList<E> list) {
-        if (node == null) return;
-        list.add(node.getElement());
-        preorder(node.getLeft(), list);
-        preorder(node.getRight(), list);
-    }
+		parent.setLeft(current.getRight());
+		size--;
 
-    @Override
-    public Iterator<E> postorderIterator() {
-        ArrayList<E> list = new ArrayList<>();
-        postorder(root, list);
-        return new ListIterator<>(list);
-    }
+		return current;
+	}
 
-    private void postorder(BSTreeNode<E> node, ArrayList<E> list) {
-        if (node == null) return;
-        postorder(node.getLeft(), list);
-        postorder(node.getRight(), list);
-        list.add(node.getElement());
-    }
+	@Override
+	public BSTreeNode<E> removeMax()
+	{
+		if(root == null)
+		{
+			return null;
+		}
 
-    // ----------- INTERNAL LIST ITERATOR -----------
+		if(root.getRight() == null)
+		{
+			BSTreeNode<E> maximum = root;
+			root = root.getLeft();
+			size--;
+			return maximum;
+		}
 
-    private static class ListIterator<E> implements Iterator<E> {
-        private ArrayList<E> list;
-        private int index = 0;
+		BSTreeNode<E> parent = root;
+		BSTreeNode<E> current = root.getRight();
 
-        public ListIterator(ArrayList<E> list) {
-            this.list = list;
-        }
+		while(current.getRight() != null)
+		{
+			parent = current;
+			current = current.getRight();
+		}
 
-        @Override
-        public boolean hasNext() {
-            return index < list.size();
-        }
+		parent.setRight(current.getLeft());
+		size--;
 
-        @Override
-        public E next() throws NoSuchElementException {
-            if (!hasNext()) throw new NoSuchElementException();
-            return list.get(index++);
-        }
-    }
+		return current;
+	}
+
+	@Override
+	public Iterator<E> inorderIterator()
+	{
+		ArrayList<E> list = new ArrayList<E>();
+		inorder(root, list);
+		return new ListIterator<E>(list);
+	}
+
+	/**
+	 * Adds elements to the list in left-root-right order.
+	 *
+	 * @param node the current node
+	 * @param list the list holding the traversal results
+	 */
+	private void inorder(BSTreeNode<E> node, ArrayList<E> list)
+	{
+		if(node == null)
+		{
+			return;
+		}
+
+		inorder(node.getLeft(), list);
+		list.add(node.getElement());
+		inorder(node.getRight(), list);
+	}
+
+	@Override
+	public Iterator<E> preorderIterator()
+	{
+		ArrayList<E> list = new ArrayList<E>();
+		preorder(root, list);
+		return new ListIterator<E>(list);
+	}
+
+	/**
+	 * Adds elements to the list in root-left-right order.
+	 *
+	 * @param node the current node
+	 * @param list the list holding the traversal results
+	 */
+	private void preorder(BSTreeNode<E> node, ArrayList<E> list)
+	{
+		if(node == null)
+		{
+			return;
+		}
+
+		list.add(node.getElement());
+		preorder(node.getLeft(), list);
+		preorder(node.getRight(), list);
+	}
+
+	@Override
+	public Iterator<E> postorderIterator()
+	{
+		ArrayList<E> list = new ArrayList<E>();
+		postorder(root, list);
+		return new ListIterator<E>(list);
+	}
+
+	/**
+	 * Adds elements to the list in left-right-root order.
+	 *
+	 * @param node the current node
+	 * @param list the list holding the traversal results
+	 */
+	private void postorder(BSTreeNode<E> node, ArrayList<E> list)
+	{
+		if(node == null)
+		{
+			return;
+		}
+
+		postorder(node.getLeft(), list);
+		postorder(node.getRight(), list);
+		list.add(node.getElement());
+	}
+
+	/**
+	 * Iterator implementation used by the tree traversals.
+	 *
+	 * @param <T> the type of elements returned by the iterator
+	 */
+	private static class ListIterator<T> implements Iterator<T>
+	{
+		private ArrayList<T> list;
+		private int index;
+
+		/**
+		 * Creates an iterator using the provided list.
+		 *
+		 * @param list the traversal result list
+		 */
+		public ListIterator(ArrayList<T> list)
+		{
+			this.list = list;
+			this.index = 0;
+		}
+
+		@Override
+		public boolean hasNext()
+		{
+			return index < list.size();
+		}
+
+		@Override
+		public T next() throws NoSuchElementException
+		{
+			if(!hasNext())
+			{
+				throw new NoSuchElementException(
+						"No more elements are available.");
+			}
+
+			return list.get(index++);
+		}
+	}
 }
